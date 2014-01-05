@@ -1,6 +1,6 @@
 # OperationRogue
 
-## Simple Roguelike game project built in jQuery/HTML5/CSS3
+Simple Roguelike game project built in jQuery/HTML5/CSS3
 
 ### Primary functionality
 
