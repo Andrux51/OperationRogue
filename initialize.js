@@ -30,10 +30,12 @@ function loadMapFromJSON(filename) {
 
 function PlaceEnemies() {
 	var totalEnemies = 5;
+	if (totalEnemies > $(".tile[data-passable='true']").length) totalEnemies = $(".tile[data-passable='true']").length - 1; // safety measure in case of small maps
+	console.log(totalEnemies);
 	var enemiesPlaced = 0;
 	var randIndex = 0;
 	var randsUsed = [];
-	for (var i in _.range(totalEnemies)) {
+	while (enemiesPlaced < totalEnemies) {
 		randIndex = _.random(0, $(".tile[data-passable='true']").length);
 		while (randsUsed.indexOf(randIndex) > -1) {
 			randIndex = _.random(0, $(".tile[data-passable='true']").length);
@@ -41,6 +43,10 @@ function PlaceEnemies() {
 		randsUsed.push(randIndex);
 		$(".tile[data-passable='true']").each(function(index) {
 			if (index === randIndex) {
+				if (Rect($(this)).x === player.rect.x && (Rect($(this)).y + tileSize * 2) === player.rect.y) {
+					console.log("tried to place " + enemiesPlaced + " on top of player, but we can fix it!");
+					return false;
+				}
 				$("#enemies").append('<div class="enemy" id="enemy-' + enemiesPlaced + '"></div>');
 				$("#enemy-" + enemiesPlaced).css({
 					'position': 'absolute',

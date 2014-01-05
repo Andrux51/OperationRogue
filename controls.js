@@ -93,13 +93,6 @@ function SetPossibleMoves() {
 	}
 }
 
-function AttackEnemy(enemy) {
-	player.health.current -= 20;
-	enemies = _.without(enemies, enemy);
-	$("#enemy-" + enemy.id).remove();
-	console.log(enemies);
-}
-
 function DoPlayerMovement() {
 	// console.log("player movement begins");
 	var enemyToCheck = {};
@@ -110,7 +103,7 @@ function DoPlayerMovement() {
 			enemyToCheck.y = player.rect.y;
 			if (_.findWhere(enemies, enemyToCheck)) {
 				enemyFound = _.findWhere(enemies, enemyToCheck);
-				AttackEnemy(enemyFound);
+				player.attackEnemy(enemyFound);
 			} else {
 				player.rect.x += tileSize;
 			}
@@ -120,7 +113,7 @@ function DoPlayerMovement() {
 			enemyToCheck.y = player.rect.y;
 			if (_.findWhere(enemies, enemyToCheck)) {
 				enemyFound = _.findWhere(enemies, enemyToCheck);
-				AttackEnemy(enemyFound);
+				player.attackEnemy(enemyFound);
 			} else {
 				player.rect.x -= tileSize;
 			}
@@ -130,7 +123,7 @@ function DoPlayerMovement() {
 			enemyToCheck.y = (player.rect.y - tileSize);
 			if (_.findWhere(enemies, enemyToCheck)) {
 				enemyFound = _.findWhere(enemies, enemyToCheck);
-				AttackEnemy(enemyFound);
+				player.attackEnemy(enemyFound);
 			} else {
 				player.rect.y -= tileSize;
 			}
@@ -140,7 +133,7 @@ function DoPlayerMovement() {
 			enemyToCheck.y = (player.rect.y - tileSize);
 			if (_.findWhere(enemies, enemyToCheck)) {
 				enemyFound = _.findWhere(enemies, enemyToCheck);
-				AttackEnemy(enemyFound);
+				player.attackEnemy(enemyFound);
 			} else {
 				player.rect.y -= tileSize;
 				player.rect.x -= tileSize;
@@ -151,7 +144,7 @@ function DoPlayerMovement() {
 			enemyToCheck.y = (player.rect.y - tileSize);
 			if (_.findWhere(enemies, enemyToCheck)) {
 				enemyFound = _.findWhere(enemies, enemyToCheck);
-				AttackEnemy(enemyFound);
+				player.attackEnemy(enemyFound);
 			} else {
 				player.rect.y -= tileSize;
 				player.rect.x += tileSize;
@@ -162,7 +155,7 @@ function DoPlayerMovement() {
 			enemyToCheck.y = (player.rect.y + tileSize);
 			if (_.findWhere(enemies, enemyToCheck)) {
 				enemyFound = _.findWhere(enemies, enemyToCheck);
-				AttackEnemy(enemyFound);
+				player.attackEnemy(enemyFound);
 			} else {
 				player.rect.y += tileSize;
 			}
@@ -172,7 +165,7 @@ function DoPlayerMovement() {
 			enemyToCheck.y = (player.rect.y + tileSize);
 			if (_.findWhere(enemies, enemyToCheck)) {
 				enemyFound = _.findWhere(enemies, enemyToCheck);
-				AttackEnemy(enemyFound);
+				player.attackEnemy(enemyFound);
 			} else {
 				player.rect.y += tileSize;
 				player.rect.x -= tileSize;
@@ -183,7 +176,7 @@ function DoPlayerMovement() {
 			enemyToCheck.y = (player.rect.y + tileSize);
 			if (_.findWhere(enemies, enemyToCheck)) {
 				enemyFound = _.findWhere(enemies, enemyToCheck);
-				AttackEnemy(enemyFound);
+				player.attackEnemy(enemyFound);
 			} else {
 				player.rect.y += tileSize;
 				player.rect.x += tileSize;

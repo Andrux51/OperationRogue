@@ -1,2 +1,5 @@
-Initialize();
-DoControls();
+function RunGame() {
+	Initialize();
+	DoControls();
+}
+RunGame();

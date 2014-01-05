@@ -50,5 +50,13 @@ player.updateHealth = function() {
 	$("#pHealth").html('&nbsp;' + getPct(player.health.current, player.health.max) + '%');
 }
 
+player.attackEnemy = function(enemy) {
+	player.health.current -= 20;
+	enemies = _.without(enemies, enemy);
+	$("#enemy-" + enemy.id).remove();
+	console.log(enemies);
+	$("#score-num").html(parseInt($("#score-num").html())+1);
+}
+
 // console.log(player);
 // console.log('_Player_Stats_\nHealth: '+player.health.current+'/'+player.health.max+'\nDamage: '+player.damage.min+'-'+player.damage.max);
