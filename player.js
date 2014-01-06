@@ -57,6 +57,3 @@ player.attackEnemy = function(enemy) {
 	console.log(enemies);
 	$("#score-num").html(parseInt($("#score-num").html())+1);
 }
-
-// console.log(player);
-// console.log('_Player_Stats_\nHealth: '+player.health.current+'/'+player.health.max+'\nDamage: '+player.damage.min+'-'+player.damage.max);

@@ -7,9 +7,12 @@ var enemies = [];
 
 function Initialize() {
 	initPlayerHealthBar();
-	// console.log(Rect(tilearea));
-	loadMapFromJSON('maps/map1.json');
+	loadMapFromJSON('maps/map' + _.random(1, 2) + '.json');
+	PlacePlayer();
 	PlaceEnemies();
+	$(".tile").css('opacity', 0);
+	$(".enemy").css('opacity', 0);
+	FlashLight();
 }
 
 function loadMapFromJSON(filename) {
@@ -28,10 +31,26 @@ function loadMapFromJSON(filename) {
 	});
 }
 
+function PlacePlayer() {
+	// Be sure when placing other things that they cannot spawn on top of the player.
+	possibleMoves.up = false;
+	var randIndex = 0;
+	while (!_.every(possibleMoves)) {
+		randIndex = _.random(0, $(".tile[data-passable='true']").length);
+		$(".tile[data-passable='true']").each(function(index) {
+			var tileRect = Rect($(this));
+			if (index === randIndex) {
+				$("#player").css('left', tileRect.x).css('top', (tileRect.y + tileSize * 2));
+				player.rect = Rect($("#player"));
+				SetPossibleMoves();
+			}
+		});
+	}
+}
+
 function PlaceEnemies() {
 	var totalEnemies = 5;
-	if (totalEnemies > $(".tile[data-passable='true']").length) totalEnemies = $(".tile[data-passable='true']").length - 1; // safety measure in case of small maps
-	console.log(totalEnemies);
+	if (totalEnemies > $(".tile[data-passable='true']").length) totalEnemies = $(".tile[data-passable='true']").length - 1; // safety measure in case of small maps; -1 because enemy cannot spawn on top of player
 	var enemiesPlaced = 0;
 	var randIndex = 0;
 	var randsUsed = [];
@@ -44,7 +63,7 @@ function PlaceEnemies() {
 		$(".tile[data-passable='true']").each(function(index) {
 			if (index === randIndex) {
 				if (Rect($(this)).x === player.rect.x && (Rect($(this)).y + tileSize * 2) === player.rect.y) {
-					console.log("tried to place " + enemiesPlaced + " on top of player, but we can fix it!");
+					// console.log("tried to place " + enemiesPlaced + " on top of player, but we can fix it!");
 					return false;
 				}
 				$("#enemies").append('<div class="enemy" id="enemy-' + enemiesPlaced + '"></div>');
@@ -59,7 +78,7 @@ function PlaceEnemies() {
 			}
 		});
 	}
-	console.log(enemies);
+	// console.log(enemies);
 }
 
 function Rect(object) {

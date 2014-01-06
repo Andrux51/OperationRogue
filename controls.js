@@ -25,7 +25,6 @@ function DoControls() {
 }
 
 function ControlMovement(key) {
-	SetPossibleMoves();
 	// keyboard movement - keep player on screen
 	mvmtDirection = "";
 	if (possibleMoves.up && (key === 38 || key === 104)) { // Up or Numpad 8
@@ -91,6 +90,7 @@ function SetPossibleMoves() {
 	if (!tilearea.find("[data-xy='" + (player.rect.x + tileSize) + "," + (player.rect.y + tileSize) + "']").data('passable')) {
 		possibleMoves.downright = false;
 	}
+	// console.log(possibleMoves);
 }
 
 function DoPlayerMovement() {
@@ -185,9 +185,49 @@ function DoPlayerMovement() {
 	}
 
 	$("#player").css('left', player.rect.x + 'px').css('top', player.rect.y + 'px');
-	if (enemies.length === 0) {
-		$("body").html('<div class="jumbotron"><h1>You won!</h1><p>Hooray for you and your ability to win this super easy game! Refresh page to play again (F5)</p></div>');
-	}
+	SetPossibleMoves();
+	FlashLight();
+	if (enemies.length === 0) $("body").html('<div class="jumbotron"><h1>You won! <small>(Score: ' + $("#score-num").html() + ')</small></h1><p>Hooray for you and your ability to win this super easy game! Refresh page to play again (F5)</p></div>');
 	// console.log('%cplayer position: [' + player.rect.x + ', ' + player.rect.y + ']', 'background-color:#bd5');
 	// console.log("player movement ends");
+}
+
+function FlashLight() {
+	for (var i in enemies) {
+		var enemy = enemies[i];
+		if (enemy.x >= (player.rect.x - tileSize * 2) && enemy.x <= (player.rect.x + tileSize * 2) && enemy.y >= (player.rect.y - tileSize * 2) && enemy.y <= (player.rect.y + tileSize * 2)) {
+			$("#enemy-" + enemy.id).css('opacity', 1);
+		}
+	}
+	// $(".tile").each(function(index) {
+	// 	var tileRect = Rect($(this));
+	// 	if (tileRect.x >= (player.rect.x - tileSize * 2) && tileRect.x <= (player.rect.x + tileSize * 2) && tileRect.y >= (player.rect.y - tileSize * 2) && tileRect.y <= (player.rect.y + tileSize * 2)) {
+	// 		$(this).css('opacity', 1);
+	// 	}
+	// });
+	tilearea.find("[data-xy='" + player.rect.x + "," + player.rect.y + "']").css('opacity', 1);
+	tilearea.find("[data-xy='" + (player.rect.x - tileSize) + "," + player.rect.y + "']").css('opacity', 1);
+	tilearea.find("[data-xy='" + (player.rect.x - tileSize * 2) + "," + player.rect.y + "']").css('opacity', 1);
+	tilearea.find("[data-xy='" + player.rect.x + "," + (player.rect.y - tileSize) + "']").css('opacity', 1);
+	tilearea.find("[data-xy='" + player.rect.x + "," + (player.rect.y - tileSize * 2) + "']").css('opacity', 1);
+	tilearea.find("[data-xy='" + (player.rect.x + tileSize) + "," + player.rect.y + "']").css('opacity', 1);
+	tilearea.find("[data-xy='" + (player.rect.x + tileSize * 2) + "," + player.rect.y + "']").css('opacity', 1);
+	tilearea.find("[data-xy='" + player.rect.x + "," + (player.rect.y + tileSize) + "']").css('opacity', 1);
+	tilearea.find("[data-xy='" + player.rect.x + "," + (player.rect.y + tileSize * 2) + "']").css('opacity', 1);
+	tilearea.find("[data-xy='" + (player.rect.x - tileSize) + "," + (player.rect.y - tileSize) + "']").css('opacity', 1);
+	tilearea.find("[data-xy='" + (player.rect.x - tileSize) + "," + (player.rect.y - tileSize * 2) + "']").css('opacity', 1);
+	tilearea.find("[data-xy='" + (player.rect.x - tileSize * 2) + "," + (player.rect.y - tileSize) + "']").css('opacity', 1);
+	tilearea.find("[data-xy='" + (player.rect.x - tileSize * 2) + "," + (player.rect.y - tileSize * 2) + "']").css('opacity', 1);
+	tilearea.find("[data-xy='" + (player.rect.x + tileSize) + "," + (player.rect.y - tileSize) + "']").css('opacity', 1);
+	tilearea.find("[data-xy='" + (player.rect.x + tileSize) + "," + (player.rect.y - tileSize * 2) + "']").css('opacity', 1);
+	tilearea.find("[data-xy='" + (player.rect.x + tileSize * 2) + "," + (player.rect.y - tileSize) + "']").css('opacity', 1);
+	tilearea.find("[data-xy='" + (player.rect.x + tileSize * 2) + "," + (player.rect.y - tileSize * 2) + "']").css('opacity', 1);
+	tilearea.find("[data-xy='" + (player.rect.x - tileSize) + "," + (player.rect.y + tileSize) + "']").css('opacity', 1);
+	tilearea.find("[data-xy='" + (player.rect.x - tileSize) + "," + (player.rect.y + tileSize * 2) + "']").css('opacity', 1);
+	tilearea.find("[data-xy='" + (player.rect.x - tileSize * 2) + "," + (player.rect.y + tileSize) + "']").css('opacity', 1);
+	tilearea.find("[data-xy='" + (player.rect.x - tileSize * 2) + "," + (player.rect.y + tileSize * 2) + "']").css('opacity', 1);
+	tilearea.find("[data-xy='" + (player.rect.x + tileSize) + "," + (player.rect.y + tileSize) + "']").css('opacity', 1);
+	tilearea.find("[data-xy='" + (player.rect.x + tileSize) + "," + (player.rect.y + tileSize * 2) + "']").css('opacity', 1);
+	tilearea.find("[data-xy='" + (player.rect.x + tileSize * 2) + "," + (player.rect.y + tileSize) + "']").css('opacity', 1);
+	tilearea.find("[data-xy='" + (player.rect.x + tileSize * 2) + "," + (player.rect.y + tileSize * 2) + "']").css('opacity', 1);
 }
