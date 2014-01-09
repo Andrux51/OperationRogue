@@ -1,5 +1,5 @@
 function RunGame() {
 	Initialize();
-	DoControls();
+	// DoControls();
 }
 RunGame();

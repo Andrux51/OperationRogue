@@ -1,28 +1,27 @@
 var mvmtDirection = "";
 var possibleMoves = {};
 
-function DoControls() {
-	$(document).keydown(function(event) {
-		var key = event.keyCode;
-		// console.log('%cKey pressed: ' + key, 'background-color:#f60');
-		// console.log(player.rect);
+// function DoControls() {
+$(document).keydown(function(event) {
+	var key = event.keyCode;
+	// console.log('%cKey pressed: ' + key, 'background-color:#f60');
+	// console.log(player.rect);
 
-		// Debug test health increase/decrease
-		if (key === 70) player.health.current -= _.random(3, 10); // F
-		if (key === 71) player.health.current += _.random(3, 10); // G
-		ControlMovement(key);
+	// Debug test health increase/decrease
+	if (key === 70) player.health.current -= _.random(3, 10); // F
+	if (key === 71) player.health.current += _.random(3, 10); // G
+	ControlMovement(key);
+	if (movementDirection !== "") DoPlayerTurn();
 
-		player.updateHealth();
+	if (key === 116 || key === 123) return; // allow F5, F12 *for development only*
 
-		if (key === 116 || key === 123) return; // allow F5, F12 *for development only*
-
-		event.preventDefault();
-		event.stopPropagation();
-	}).keyup(function(event) {
-		var key = event.keyCode;
-		// console.log('Key released: '+key);
-	});
-}
+	event.preventDefault();
+	event.stopPropagation();
+}).keyup(function(event) {
+	var key = event.keyCode;
+	// console.log('Key released: '+key);
+});
+// }
 
 function ControlMovement(key) {
 	// keyboard movement - keep player on screen
@@ -51,7 +50,6 @@ function ControlMovement(key) {
 	if (possibleMoves.left && (key === 37 || key === 100)) { // Left or Numpad 1,4,7
 		mvmtDirection = "left";
 	}
-	if (mvmtDirection) DoPlayerMovement();
 }
 
 function SetPossibleMoves() {
@@ -93,8 +91,8 @@ function SetPossibleMoves() {
 	// console.log(possibleMoves);
 }
 
-function DoPlayerMovement() {
-	// console.log("player movement begins");
+function DoPlayerTurn() {
+	// console.log("player turn begins");
 	var enemyToCheck = {};
 	var enemyFound = {};
 	switch (mvmtDirection) {
@@ -189,7 +187,9 @@ function DoPlayerMovement() {
 	FlashLight();
 	if (enemies.length === 0) $("body").html('<div class="jumbotron"><h1>You won! <small>(Score: ' + $("#score-num").html() + ')</small></h1><p>Hooray for you and your ability to win this super easy game! Refresh page to play again (F5)</p></div>');
 	// console.log('%cplayer position: [' + player.rect.x + ', ' + player.rect.y + ']', 'background-color:#bd5');
-	// console.log("player movement ends");
+	player.updateHealth();
+	// console.log("player turn ends");
+	// for(var i in enemies) { DoEnemyTurn(enemies[i]); }
 }
 
 function FlashLight() {
