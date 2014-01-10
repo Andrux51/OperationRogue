@@ -11,7 +11,7 @@ $(document).keydown(function(event) {
 	if (key === 70) player.health.current -= _.random(3, 10); // F
 	if (key === 71) player.health.current += _.random(3, 10); // G
 	ControlMovement(key);
-	if (movementDirection !== "") DoPlayerTurn();
+	if (mvmtDirection !== "") DoPlayerTurn();
 
 	if (key === 116 || key === 123) return; // allow F5, F12 *for development only*
 
