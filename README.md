@@ -9,7 +9,7 @@ Simple Roguelike game project built in jQuery/HTML5/CSS3
 
 #### Player can attack enemies
 * Walking into an enemy constitutes a melee attack
-    * "Roll dice" for damage ... hit chance (90%? 80%?) _no less than 80_
+    * "Roll dice" for damage
 
 #### Enemy can attack player
 * Enemy always tries to get to melee range and attack
