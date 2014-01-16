@@ -20,7 +20,7 @@ Simple Roguelike game project built in jQuery/HTML5/CSS3
 * Hallways (any length, must always be connected to a room + be away from other hallways)
 * Stairway (1 per level, must be in a room)
 
-## Extra Features (add after primary functionality is done)
+## Extra Features
 
 #### In-game clock
 * Show real time for player to keep track of the clock in the real world
