@@ -36,5 +36,6 @@ Simple Roguelike game project built in jQuery/HTML5/CSS3
 
 #### Inventory (weapon, armor/shield, items?)
 * Either managed, or new replaces old (confirm equip)
+
 #### Abilities (single slot, or managed list)
 * Single slot will impact strategy (good or bad?) but easier to code! (confirm pickup new ability)
