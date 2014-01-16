@@ -1,7 +1,6 @@
 var mvmtDirection = "";
 var possibleMoves = {};
 
-// function DoControls() {
 $(document).keydown(function(event) {
 	var key = event.keyCode;
 	// console.log('%cKey pressed: ' + key, 'background-color:#f60');
@@ -21,7 +20,6 @@ $(document).keydown(function(event) {
 	var key = event.keyCode;
 	// console.log('Key released: '+key);
 });
-// }
 
 function ControlMovement(key) {
 	// keyboard movement - keep player on screen
