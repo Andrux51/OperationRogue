@@ -1,24 +1,24 @@
 var mvmtDirection = "";
 var possibleMoves = {};
+var enemyToCheck = {};
+var enemyFound = {};
 
-$(document).keydown(function(event) {
-	var key = event.keyCode;
-	// console.log('%cKey pressed: ' + key, 'background-color:#f60');
+$(document).keydown(function(e) {
+	// console.log('%cKey pressed: ' + e.keyCode, 'background-color:#f60');
 	// console.log(player.rect);
 
 	// Debug test health increase/decrease
-	if (key === 70) player.health.current -= _.random(3, 10); // F
-	if (key === 71) player.health.current += _.random(3, 10); // G
-	ControlMovement(key);
-	if (mvmtDirection !== "") DoPlayerTurn();
+	if (e.keyCode === 70) player.health.current -= _.random(3, 10); // F
+	if (e.keyCode === 71) player.health.current += _.random(3, 10); // G
+	ControlMovement(e.keyCode);
+	if (mvmtDirection !== "") player.takeTurn();
 
-	if (key === 116 || key === 123) return; // allow F5, F12 *for development only*
+	if (e.keyCode === 116 || e.keyCode === 123) return; // allow F5, F12 *for development only*
 
-	event.preventDefault();
-	event.stopPropagation();
-}).keyup(function(event) {
-	var key = event.keyCode;
-	// console.log('Key released: '+key);
+	e.preventDefault();
+	e.stopPropagation();
+}).keyup(function(e) {
+	// console.log('Key released: '+e.keyCode);
 });
 
 function ControlMovement(key) {
@@ -50,7 +50,7 @@ function ControlMovement(key) {
 	}
 }
 
-function SetPossibleMoves() {
+function CheckForPassableTiles() {
 	// find all possible moves in 8 directions
 	possibleMoves = {
 		up: true,
@@ -89,105 +89,24 @@ function SetPossibleMoves() {
 	// console.log(possibleMoves);
 }
 
-function DoPlayerTurn() {
-	// console.log("player turn begins");
-	var enemyToCheck = {};
-	var enemyFound = {};
-	switch (mvmtDirection) {
-		case "right":
-			enemyToCheck.x = (player.rect.x + tileSize);
-			enemyToCheck.y = player.rect.y;
-			if (_.findWhere(enemies, enemyToCheck)) {
-				enemyFound = _.findWhere(enemies, enemyToCheck);
-				player.attackEnemy(enemyFound);
-			} else {
-				player.rect.x += tileSize;
-			}
-			break;
-		case "left":
-			enemyToCheck.x = (player.rect.x - tileSize);
-			enemyToCheck.y = player.rect.y;
-			if (_.findWhere(enemies, enemyToCheck)) {
-				enemyFound = _.findWhere(enemies, enemyToCheck);
-				player.attackEnemy(enemyFound);
-			} else {
-				player.rect.x -= tileSize;
-			}
-			break;
-		case "up":
-			enemyToCheck.x = player.rect.x;
-			enemyToCheck.y = (player.rect.y - tileSize);
-			if (_.findWhere(enemies, enemyToCheck)) {
-				enemyFound = _.findWhere(enemies, enemyToCheck);
-				player.attackEnemy(enemyFound);
-			} else {
-				player.rect.y -= tileSize;
-			}
-			break;
-		case "upleft":
-			enemyToCheck.x = (player.rect.x - tileSize);
-			enemyToCheck.y = (player.rect.y - tileSize);
-			if (_.findWhere(enemies, enemyToCheck)) {
-				enemyFound = _.findWhere(enemies, enemyToCheck);
-				player.attackEnemy(enemyFound);
-			} else {
-				player.rect.y -= tileSize;
-				player.rect.x -= tileSize;
-			}
-			break;
-		case "upright":
-			enemyToCheck.x = (player.rect.x + tileSize);
-			enemyToCheck.y = (player.rect.y - tileSize);
-			if (_.findWhere(enemies, enemyToCheck)) {
-				enemyFound = _.findWhere(enemies, enemyToCheck);
-				player.attackEnemy(enemyFound);
-			} else {
-				player.rect.y -= tileSize;
-				player.rect.x += tileSize;
-			}
-			break;
-		case "down":
-			enemyToCheck.x = player.rect.x;
-			enemyToCheck.y = (player.rect.y + tileSize);
-			if (_.findWhere(enemies, enemyToCheck)) {
-				enemyFound = _.findWhere(enemies, enemyToCheck);
-				player.attackEnemy(enemyFound);
-			} else {
-				player.rect.y += tileSize;
-			}
-			break;
-		case "downleft":
-			enemyToCheck.x = (player.rect.x - tileSize);
-			enemyToCheck.y = (player.rect.y + tileSize);
-			if (_.findWhere(enemies, enemyToCheck)) {
-				enemyFound = _.findWhere(enemies, enemyToCheck);
-				player.attackEnemy(enemyFound);
-			} else {
-				player.rect.y += tileSize;
-				player.rect.x -= tileSize;
-			}
-			break;
-		case "downright":
-			enemyToCheck.x = (player.rect.x + tileSize);
-			enemyToCheck.y = (player.rect.y + tileSize);
-			if (_.findWhere(enemies, enemyToCheck)) {
-				enemyFound = _.findWhere(enemies, enemyToCheck);
-				player.attackEnemy(enemyFound);
-			} else {
-				player.rect.y += tileSize;
-				player.rect.x += tileSize;
-			}
-			break;
-	}
+function MoveUnit(unit,x, y) {
+	unit.rect.x += x * tileSize;
+	unit.rect.y += y * tileSize;
+	unit.jq.css('left',unit.rect.x+'px').css('top',unit.rect.y+'px');
+}
 
-	$("#player").css('left', player.rect.x + 'px').css('top', player.rect.y + 'px');
-	SetPossibleMoves();
-	FlashLight();
-	if (enemies.length === 0) $("body").html('<div class="jumbotron"><h1>You won! <small>(Score: ' + $("#score-num").html() + ')</small></h1><p>Hooray for you and your ability to win this super easy game! Refresh page to play again (F5)</p></div>');
-	// console.log('%cplayer position: [' + player.rect.x + ', ' + player.rect.y + ']', 'background-color:#bd5');
-	player.updateHealth();
-	// console.log("player turn ends");
-	// for(var i in enemies) { DoEnemyTurn(enemies[i]); }
+function CheckTileNearPlayer(x, y) {
+	return {
+		"x": (player.rect.x + x * tileSize),
+		"y": (player.rect.y + y * tileSize)
+	};
+}
+
+function FindObjectNearPlayer(array_of_objects, tile_to_check_x, tile_to_check_y) {
+	if (_.findWhere(array_of_objects, CheckTileNearPlayer(tile_to_check_x, tile_to_check_y))) {
+		return _.findWhere(array_of_objects, CheckTileNearPlayer(tile_to_check_x, tile_to_check_y));
+	}
+	return false;
 }
 
 function FlashLight() {
@@ -197,6 +116,7 @@ function FlashLight() {
 			$("#enemy-" + enemy.id).css('opacity', 1);
 		}
 	}
+	// way too slow since it's checking EVERY tile every time
 	// $(".tile").each(function(index) {
 	// 	var tileRect = Rect($(this));
 	// 	if (tileRect.x >= (player.rect.x - tileSize * 2) && tileRect.x <= (player.rect.x + tileSize * 2) && tileRect.y >= (player.rect.y - tileSize * 2) && tileRect.y <= (player.rect.y + tileSize * 2)) {

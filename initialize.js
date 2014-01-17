@@ -3,16 +3,45 @@ console.clear();
 var tileSize = 32;
 var tilearea = $("#tilearea");
 var pHealth = $("#pHealthFill");
-var enemies = [];
 
 function Initialize() {
-	initPlayerHealthBar();
+	UpdateUnitHealth(player);
+	setUnitPopoverContent(player);
 	loadMapFromJSON('maps/map' + _.random(1, 2) + '.json');
 	PlacePlayer();
 	PlaceEnemies();
 	$(".tile").css('opacity', 0);
 	$(".enemy").css('opacity', 0);
 	FlashLight();
+}
+
+function UpdateUnitHealth(unit) {
+	unit.healthBar.css('width', getPct(unit.health.current, unit.health.max));
+	unit.healthBar.css('width', clampValue(Number(unit.healthBar.css('width').split('p')[0]), 0, 100));
+	unit.healthBar.css('background-color', 'rgb(' +
+		(100 - getPct(unit.health.current, unit.health.max)) +
+		',' +
+		(180 - getPct(unit.health.current, unit.health.max)) +
+		',' +
+		(255 - getPct(unit.health.current, unit.health.max)) +
+		')');
+	unit.health.current = clampValue(unit.health.current, 0, unit.health.max);
+	if (unit === player) {
+		$("#pHealth").html('&nbsp;' + getPct(unit.health.current, unit.health.max) + '%');
+	}
+}
+
+function showGameOverScreen() {
+	$("body").html('<div class="jumbotron"><h1>You lost! <small>(Score: ' + $("#score-num").html() + ')</small></h1><p>OH YOU SUCK! Refresh page to play again (F5)</p></div>');
+	// do stuff
+}
+
+function setUnitPopoverContent(unit) {
+	strTitle = unit.name;
+	unit.popover.options.title = strTitle;
+	strContent = '<strong>Health:</strong> ' + unit.health.current + '\/' + unit.health.max;
+	strContent += '<br /><strong>Damage:</strong> ' + unit.damage.min + '-' + unit.damage.max;
+	unit.popover.options.content = strContent;
 }
 
 function loadMapFromJSON(filename) {
@@ -26,7 +55,6 @@ function loadMapFromJSON(filename) {
 				}
 				tilearea.append('<br />');
 			}
-
 		}
 	});
 }
@@ -42,19 +70,20 @@ function PlacePlayer() {
 			if (index === randIndex) {
 				$("#player").css('left', tileRect.x).css('top', (tileRect.y + tileSize * 2));
 				player.rect = Rect($("#player"));
-				SetPossibleMoves();
+				CheckForPassableTiles();
 			}
 		});
 	}
 }
 
+// Can place enemies after map load at random intervals, either chance on turn ending, or over time
 function PlaceEnemies() {
 	var totalEnemies = 5;
 	if (totalEnemies > $(".tile[data-passable='true']").length) totalEnemies = $(".tile[data-passable='true']").length - 1; // safety measure in case of small maps; -1 because enemy cannot spawn on top of player
-	var enemiesPlaced = 0;
+	var enemiesOnCurrentMap = 0;
 	var randIndex = 0;
 	var randsUsed = [];
-	while (enemiesPlaced < totalEnemies) {
+	while (enemiesOnCurrentMap < totalEnemies) {
 		randIndex = _.random(0, $(".tile[data-passable='true']").length);
 		while (randsUsed.indexOf(randIndex) > -1) {
 			randIndex = _.random(0, $(".tile[data-passable='true']").length);
@@ -63,22 +92,22 @@ function PlaceEnemies() {
 		$(".tile[data-passable='true']").each(function(index) {
 			if (index === randIndex) {
 				if (Rect($(this)).x === player.rect.x && (Rect($(this)).y + tileSize * 2) === player.rect.y) {
-					// console.log("tried to place " + enemiesPlaced + " on top of player, but we can fix it!");
 					return false;
 				}
-				$("#enemies").append('<div class="enemy" id="enemy-' + enemiesPlaced + '"></div>');
-				$("#enemy-" + enemiesPlaced).css({
+				$("#enemies").append('<div class="enemy" id="enemy-' + enemiesOnCurrentMap + '" style="background:url(\'images/I_Cannon01.png\')"></div>');
+				$("#enemy-" + enemiesOnCurrentMap).css({
 					'position': 'absolute',
 					'top': (Rect($(this)).y + tileSize * 2) + 'px',
 					'left': Rect($(this)).x + 'px'
 				});
-				enemies.push(Rect($("#enemy-" + enemiesPlaced)));
-				enemies[enemiesPlaced].id = enemiesPlaced;
-				enemiesPlaced++;
+				enemies.push(Rect($("#enemy-" + enemiesOnCurrentMap)));
+				enemies[enemiesOnCurrentMap].id = enemiesOnCurrentMap;
+				enemies[enemiesOnCurrentMap].health = {current:20,max:20};
+				enemiesOnCurrentMap++;
 			}
 		});
 	}
-	// console.log(enemies);
+	console.log(enemies);
 }
 
 function Rect(object) {

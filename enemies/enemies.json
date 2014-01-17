@@ -1,0 +1,22 @@
+{
+	"id":0,
+	"name":"Soldier 1",
+	"health":{
+		"max":20
+	},
+	"damage":{
+		"min":4,
+		"max":8
+	}
+},
+{
+	"id":1,
+	"name":"Soldier 2",
+	"health":{
+		"max":30
+	},
+	"damage":{
+		"min":6,
+		"max":7
+	}
+}
