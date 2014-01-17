@@ -17,7 +17,7 @@ Simple Roguelike game project built in jQuery/HTML5/CSS3
 #### Terrain generated procedurally 
 * 32x32px tiles
 * Rooms (size 3x3 - 10x10)
-* Hallways (any length, must always be connected to a room + be away from other hallways)
+* Hallways (any length, always connected to a room & only 1 tile wide)
 * Stairway (1 per level, must be in a room)
 
 ## Extra Features
