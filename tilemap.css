@@ -5,6 +5,7 @@
 	color:white;
 	text-align:center;
 	line-height:32px;
+	opacity:0;
 }
 
 .tile-1 {	background:url('images/floortile-rivet.png'); }

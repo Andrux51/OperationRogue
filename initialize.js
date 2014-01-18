@@ -4,14 +4,19 @@ var tileSize = 32;
 var tilearea = $("#tilearea");
 var pHealth = $("#pHealthFill");
 
-function Initialize() {
+function InitializeMap() {
 	UpdateUnitHealth(player);
 	setUnitPopoverContent(player);
 	loadMapFromJSON('maps/map' + _.random(1, 2) + '.json');
 	PlacePlayer();
-	PlaceEnemies();
-	$(".tile").css('opacity', 0);
-	$(".enemy").css('opacity', 0);
+	for(var i = 0; i < totalEnemiesForMap; i++) {
+		loadEnemyFromJSON(_.random(0,2));
+	}
+	// console.log(enemies);
+	for(var i in enemies) {
+		setUnitPopoverContent(enemies[i]);
+	}
+
 	FlashLight();
 }
 
@@ -27,7 +32,7 @@ function UpdateUnitHealth(unit) {
 		')');
 	unit.health.current = clampValue(unit.health.current, 0, unit.health.max);
 	if (unit === player) {
-		$("#pHealth").html('&nbsp;' + getPct(unit.health.current, unit.health.max) + '%');
+		$("#player-healthBar").html('&nbsp;' + getPct(unit.health.current, unit.health.max) + '%');
 	}
 }
 
@@ -37,11 +42,9 @@ function showGameOverScreen() {
 }
 
 function setUnitPopoverContent(unit) {
-	strTitle = unit.name;
-	unit.popover.options.title = strTitle;
-	strContent = '<strong>Health:</strong> ' + unit.health.current + '\/' + unit.health.max;
-	strContent += '<br /><strong>Damage:</strong> ' + unit.damage.min + '-' + unit.damage.max;
-	unit.popover.options.content = strContent;
+	// strContent = '<strong>Health:</strong> ' + unit.health.current + '\/' + unit.health.max;
+	// strContent += '<br /><strong>Damage:</strong> ' + unit.damage.min + '-' + unit.damage.max;
+	unit.popover.options.content = unit.showStats();
 }
 
 function loadMapFromJSON(filename) {
@@ -76,40 +79,6 @@ function PlacePlayer() {
 	}
 }
 
-// Can place enemies after map load at random intervals, either chance on turn ending, or over time
-function PlaceEnemies() {
-	var totalEnemies = 5;
-	if (totalEnemies > $(".tile[data-passable='true']").length) totalEnemies = $(".tile[data-passable='true']").length - 1; // safety measure in case of small maps; -1 because enemy cannot spawn on top of player
-	var enemiesOnCurrentMap = 0;
-	var randIndex = 0;
-	var randsUsed = [];
-	while (enemiesOnCurrentMap < totalEnemies) {
-		randIndex = _.random(0, $(".tile[data-passable='true']").length);
-		while (randsUsed.indexOf(randIndex) > -1) {
-			randIndex = _.random(0, $(".tile[data-passable='true']").length);
-		}
-		randsUsed.push(randIndex);
-		$(".tile[data-passable='true']").each(function(index) {
-			if (index === randIndex) {
-				if (Rect($(this)).x === player.rect.x && (Rect($(this)).y + tileSize * 2) === player.rect.y) {
-					return false;
-				}
-				$("#enemies").append('<div class="enemy" id="enemy-' + enemiesOnCurrentMap + '" style="background:url(\'images/I_Cannon01.png\')"></div>');
-				$("#enemy-" + enemiesOnCurrentMap).css({
-					'position': 'absolute',
-					'top': (Rect($(this)).y + tileSize * 2) + 'px',
-					'left': Rect($(this)).x + 'px'
-				});
-				enemies.push(Rect($("#enemy-" + enemiesOnCurrentMap)));
-				enemies[enemiesOnCurrentMap].id = enemiesOnCurrentMap;
-				enemies[enemiesOnCurrentMap].health = {current:20,max:20};
-				enemiesOnCurrentMap++;
-			}
-		});
-	}
-	console.log(enemies);
-}
-
 function Rect(object) {
 	return {
 		x: object.position().left,
@@ -119,7 +88,8 @@ function Rect(object) {
 	};
 }
 
-document.oncontextmenu = function() {
+// prevent default right-click browser action
+document.getElementById('viewport').oncontextmenu = function() {
 	return false;
 };
 

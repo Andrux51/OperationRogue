@@ -1,4 +1,4 @@
 function RunGame() {
-	Initialize();
+	InitializeMap();
 }
 RunGame();

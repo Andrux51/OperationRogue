@@ -11,17 +11,23 @@ var player = {
 		min: 6,
 		max: 10
 	},
+	xp: 0,
+	money: 0,
+	steps: 0,
+	movementDirection: "",
 	showStats: function() {
 		strStats = '<strong>Health:</strong> ' + player.health.current + '\/' + player.health.max;
 		strStats += '<br /><strong>Damage:</strong> ' + player.damage.min + '-' + player.damage.max;
+		strStats += '<br /><strong>Experience:</strong> ' + player.xp;
+		strStats += '<br /><strong>Money:</strong> ' + player.money;
 		return strStats;
 	},
 	attackEnemy: function(enemy) {
-		// These need to move to enemy.attackPlayer();
-		player.health.current -= _.random(6, 10);
-		setUnitPopoverContent(player);
-		enemy.health.current -= _.random(player.damage.min, player.damage.max);
-		// console.log(enemy.health);
+		var damageRand = _.random(player.damage.min, player.damage.max);
+		console.log('Player attacking '+enemy.name + '! Damage dealt: '+damageRand);
+		enemy.jq.fadeToggle(50).fadeToggle(50);
+		enemy.health.current -= damageRand;
+		UpdateUnitHealth(enemy);
 		if (enemy.health.current <= 0) {
 			DoEnemyDeath(enemy);
 		}
@@ -30,67 +36,72 @@ var player = {
 		// console.log("player turn begins");
 		enemyToCheck = {};
 		enemyFound = {};
-		switch (mvmtDirection) {
+		switch (player.movementDirection) {
 			case "right":
-				enemyFound = FindObjectNearPlayer(enemies, 1, 0);
+				enemyFound = FindObjectNearUnit(player, enemies, 1, 0);
 				if (!enemyFound) MoveUnit(player, 1, 0);
 				break;
 			case "left":
-				enemyFound = FindObjectNearPlayer(enemies, -1, 0);
+				enemyFound = FindObjectNearUnit(player, enemies, -1, 0);
 				if (!enemyFound) MoveUnit(player, -1, 0);
 				break;
 			case "up":
-				enemyFound = FindObjectNearPlayer(enemies, 0, -1);
+				enemyFound = FindObjectNearUnit(player, enemies, 0, -1);
 				if (!enemyFound) MoveUnit(player, 0, -1);
 				break;
 			case "upleft":
-				enemyFound = FindObjectNearPlayer(enemies, -1, -1);
+				enemyFound = FindObjectNearUnit(player, enemies, -1, -1);
 				if (!enemyFound) MoveUnit(player, -1, -1);
 				break;
 			case "upright":
-				enemyFound = FindObjectNearPlayer(enemies, 1, -1);
+				enemyFound = FindObjectNearUnit(player, enemies, 1, -1);
 				if (!enemyFound) MoveUnit(player, 1, -1);
 				break;
 			case "down":
-				enemyFound = FindObjectNearPlayer(enemies, 0, 1);
+				enemyFound = FindObjectNearUnit(player, enemies, 0, 1);
 				if (!enemyFound) MoveUnit(player, 0, 1);
 				break;
 			case "downleft":
-				enemyFound = FindObjectNearPlayer(enemies, -1, 1);
+				enemyFound = FindObjectNearUnit(player, enemies, -1, 1);
 				if (!enemyFound) MoveUnit(player, -1, 1);
 				break;
 			case "downright":
-				enemyFound = FindObjectNearPlayer(enemies, 1, 1);
+				enemyFound = FindObjectNearUnit(player, enemies, 1, 1);
 				if (!enemyFound) MoveUnit(player, 1, 1);
 				break;
 		}
-		if (enemyFound) player.attackEnemy(enemyFound);
-
+		if (enemyFound) {
+			player.attackEnemy(enemyFound);
+		} else {
+			player.steps++;
+		}
 		CheckForPassableTiles();
 		FlashLight();
-		if (enemies.length === 0) $("body").html('<div class="jumbotron"><h1>You won! <small>(Score: ' + $("#score-num").html() + ')</small></h1><p>Hooray for you and your ability to win this super easy game! Refresh page to play again (F5)</p></div>');
+		// if (enemies.length === 0) $("body").html('<div class="jumbotron"><h1>You won! <small>(Score: ' + $("#score-num").html() + ')</small></h1><p>Hooray for you and your ability to win this super easy game! Refresh page to play again (F5)</p></div>');
 		// console.log('%cplayer position: [' + player.rect.x + ', ' + player.rect.y + ']', 'background-color:#bd5');
-		UpdateUnitHealth(player);
 		if (player.health.current <= 0) showGameOverScreen();
 		// console.log("player turn ends");
-		// for(var i in enemies) enemy.takeTurn();
 	}
 };
 
 function DoEnemyDeath(enemy) {
-	// Give reward to player (above enemy death code because enemies will have xp value that needs to be added)
-	$("#score-num").html(parseInt($("#score-num").html()) + 1);
+	// Give reward to player
+	// $("#score-num").html(parseInt($("#score-num").html()) + 1); // total kills...
+	player.xp += enemy.xp;
+	player.money += enemy.money;
+	$("#score-num").html(player.xp);
+	$("#money-num").html(player.money);
 	// Remove enemy from array and DOM
 	enemies = _.without(enemies, enemy);
-	$("#enemy-" + enemy.id).remove();
-	// console.log(enemies);
+	$("#enemy-" + enemy.serial).remove();
+	enemiesOnCurrentMap--;
 }
 
 player.jq.popover({
 	html: true,
 	container: 'body',
 	placement: 'auto right',
-	title: "Player",
+	title: player.name,
 	content: player.showStats(),
 	trigger: 'manual'
 });
