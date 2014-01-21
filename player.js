@@ -15,6 +15,7 @@ var player = {
 	money: 0,
 	steps: 0,
 	movementDirection: "",
+	possibleMoves: {up:false},
 	showStats: function() {
 		strStats = '<strong>Health:</strong> ' + player.health.current + '\/' + player.health.max;
 		strStats += '<br /><strong>Damage:</strong> ' + player.damage.min + '-' + player.damage.max;
@@ -75,7 +76,7 @@ var player = {
 		} else {
 			player.steps++;
 		}
-		CheckForPassableTiles();
+		CheckForPassableTiles(player);
 		FlashLight();
 		// if (enemies.length === 0) $("body").html('<div class="jumbotron"><h1>You won! <small>(Score: ' + $("#score-num").html() + ')</small></h1><p>Hooray for you and your ability to win this super easy game! Refresh page to play again (F5)</p></div>');
 		// console.log('%cplayer position: [' + player.rect.x + ', ' + player.rect.y + ']', 'background-color:#bd5');

@@ -26,6 +26,7 @@ function loadEnemyFromJSON(id) {
 
 function addFunctionsToEnemyData(enemy) {
 	enemy.serial = enemiesPlaced;
+	enemy.possibleMoves = {};
 	enemy.takeTurn = function() {
 		// console.log(enemy.serial + ' taking turn');
 		if (enemy.tryToFindPlayer()) {

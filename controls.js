@@ -30,35 +30,35 @@ $(document).keydown(function(e) {
 function ControlMovement(key) {
 	// keyboard movement - keep player on screen
 	player.movementDirection = "";
-	if (possibleMoves.up && (key === 38 || key === 104)) { // Up or Numpad 8
+	if (player.possibleMoves.up && (key === 38 || key === 104)) { // Up or Numpad 8
 		player.movementDirection = "up";
 	}
-	if (possibleMoves.upleft && key === 103) { // Numpad 7
+	if (player.possibleMoves.upleft && key === 103) { // Numpad 7
 		player.movementDirection = "upleft";
 	}
-	if (possibleMoves.upright && key === 105) { // Numpad 9
+	if (player.possibleMoves.upright && key === 105) { // Numpad 9
 		player.movementDirection = "upright";
 	}
-	if (possibleMoves.right && (key === 39 || key === 102)) { // Right or Numpad 3,6,9
+	if (player.possibleMoves.right && (key === 39 || key === 102)) { // Right or Numpad 3,6,9
 		player.movementDirection = "right";
 	}
-	if (possibleMoves.down && (key === 40 || key === 98)) { // Down or Numpad 1,2,3
+	if (player.possibleMoves.down && (key === 40 || key === 98)) { // Down or Numpad 1,2,3
 		player.movementDirection = "down";
 	}
-	if (possibleMoves.downleft && key === 97) { // Numpad 7
+	if (player.possibleMoves.downleft && key === 97) { // Numpad 7
 		player.movementDirection = "downleft";
 	}
-	if (possibleMoves.downright && key === 99) { // Numpad 9
+	if (player.possibleMoves.downright && key === 99) { // Numpad 9
 		player.movementDirection = "downright";
 	}
-	if (possibleMoves.left && (key === 37 || key === 100)) { // Left or Numpad 1,4,7
+	if (player.possibleMoves.left && (key === 37 || key === 100)) { // Left or Numpad 1,4,7
 		player.movementDirection = "left";
 	}
 }
 
-function CheckForPassableTiles() {
+function CheckForPassableTiles(unit) {
 	// find all possible moves in 8 directions
-	possibleMoves = {
+	unit.possibleMoves = {
 		up: true,
 		upleft: true,
 		upright: true,
@@ -69,67 +69,67 @@ function CheckForPassableTiles() {
 		left: true
 	};
 	if (!tilearea.find("[data-xy='" + (player.rect.x - tileSize) + "," + player.rect.y + "']").data('passable')) {
-		possibleMoves.left = false;
+		unit.possibleMoves.left = false;
 	}
 	if (!tilearea.find("[data-xy='" + (player.rect.x + tileSize) + "," + player.rect.y + "']").data('passable')) {
-		possibleMoves.right = false;
+		unit.possibleMoves.right = false;
 	}
 	if (!tilearea.find("[data-xy='" + player.rect.x + "," + (player.rect.y - tileSize) + "']").data('passable')) {
-		possibleMoves.up = false;
+		unit.possibleMoves.up = false;
 	}
 	if (!tilearea.find("[data-xy='" + (player.rect.x - tileSize) + "," + (player.rect.y - tileSize) + "']").data('passable')) {
-		possibleMoves.upleft = false;
+		unit.possibleMoves.upleft = false;
 	}
 	if (!tilearea.find("[data-xy='" + (player.rect.x + tileSize) + "," + (player.rect.y - tileSize) + "']").data('passable')) {
-		possibleMoves.upright = false;
+		unit.possibleMoves.upright = false;
 	}
 	if (!tilearea.find("[data-xy='" + player.rect.x + "," + (player.rect.y + tileSize) + "']").data('passable')) {
-		possibleMoves.down = false;
+		unit.possibleMoves.down = false;
 	}
 	if (!tilearea.find("[data-xy='" + (player.rect.x - tileSize) + "," + (player.rect.y + tileSize) + "']").data('passable')) {
-		possibleMoves.downleft = false;
+		unit.possibleMoves.downleft = false;
 	}
 	if (!tilearea.find("[data-xy='" + (player.rect.x + tileSize) + "," + (player.rect.y + tileSize) + "']").data('passable')) {
-		possibleMoves.downright = false;
+		unit.possibleMoves.downright = false;
 	}
 	// Disallow diagonal movement into/out of hallways
-	if (!possibleMoves.left && !possibleMoves.upleft) {
-		possibleMoves.downleft = false;
+	if (!unit.possibleMoves.left && !unit.possibleMoves.upleft) {
+		unit.possibleMoves.downleft = false;
 	}
-	if (!possibleMoves.left && !possibleMoves.downleft) {
-		possibleMoves.upleft = false;
+	if (!unit.possibleMoves.left && !unit.possibleMoves.downleft) {
+		unit.possibleMoves.upleft = false;
 	}
-	if (!possibleMoves.right && !possibleMoves.upright) {
-		possibleMoves.downright = false;
+	if (!unit.possibleMoves.right && !unit.possibleMoves.upright) {
+		unit.possibleMoves.downright = false;
 	}
-	if (!possibleMoves.right && !possibleMoves.downright) {
-		possibleMoves.upright = false;
+	if (!unit.possibleMoves.right && !unit.possibleMoves.downright) {
+		unit.possibleMoves.upright = false;
 	}
-	if (!possibleMoves.up && !possibleMoves.upleft) {
-		possibleMoves.upright = false;
+	if (!unit.possibleMoves.up && !unit.possibleMoves.upleft) {
+		unit.possibleMoves.upright = false;
 	}
-	if (!possibleMoves.up && !possibleMoves.upright) {
-		possibleMoves.upleft = false;
+	if (!unit.possibleMoves.up && !unit.possibleMoves.upright) {
+		unit.possibleMoves.upleft = false;
 	}
-	if (!possibleMoves.down && !possibleMoves.downleft) {
-		possibleMoves.downright = false;
+	if (!unit.possibleMoves.down && !unit.possibleMoves.downleft) {
+		unit.possibleMoves.downright = false;
 	}
-	if (!possibleMoves.down && !possibleMoves.downright) {
-		possibleMoves.downleft = false;
+	if (!unit.possibleMoves.down && !unit.possibleMoves.downright) {
+		unit.possibleMoves.downleft = false;
 	}
-	if (!possibleMoves.up && !possibleMoves.down) {
-		possibleMoves.upleft = false;
-		possibleMoves.downleft = false;
-		possibleMoves.upright = false;
-		possibleMoves.downright = false;
+	if (!unit.possibleMoves.up && !unit.possibleMoves.down) {
+		unit.possibleMoves.upleft = false;
+		unit.possibleMoves.downleft = false;
+		unit.possibleMoves.upright = false;
+		unit.possibleMoves.downright = false;
 	}
-	if (!possibleMoves.left && !possibleMoves.right) {
-		possibleMoves.upleft = false;
-		possibleMoves.downleft = false;
-		possibleMoves.upright = false;
-		possibleMoves.downright = false;
+	if (!unit.possibleMoves.left && !unit.possibleMoves.right) {
+		unit.possibleMoves.upleft = false;
+		unit.possibleMoves.downleft = false;
+		unit.possibleMoves.upright = false;
+		unit.possibleMoves.downright = false;
 	}
-	// console.log(possibleMoves);
+	// console.log(unit.possibleMoves);
 }
 
 function MoveUnit(unit, x, y) {

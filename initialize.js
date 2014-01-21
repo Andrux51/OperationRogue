@@ -64,16 +64,15 @@ function loadMapFromJSON(filename) {
 
 function PlacePlayer() {
 	// Be sure when placing other things that they cannot spawn on top of the player.
-	possibleMoves.up = false;
 	var randIndex = 0;
-	while (!_.every(possibleMoves)) {
+	while (!_.every(player.possibleMoves)) { // Only place the player somewhere they can move in every direction
 		randIndex = _.random(0, $(".tile[data-passable='true']").length);
 		$(".tile[data-passable='true']").each(function(index) {
 			var tileRect = Rect($(this));
 			if (index === randIndex) {
 				$("#player").css('left', tileRect.x).css('top', (tileRect.y + tileSize * 2));
 				player.rect = Rect($("#player"));
-				CheckForPassableTiles();
+				CheckForPassableTiles(player);
 			}
 		});
 	}
